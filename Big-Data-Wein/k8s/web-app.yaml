@@ -1,0 +1,59 @@
+#Begin: Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+ name: big-data-deployment
+ labels:
+  app: big-data-deployment
+spec:
+ replicas: 1
+ selector:
+  matchLabels:
+   app: big-data
+ template:
+  metadata:
+   labels:
+    app: big-data
+  spec:
+   containers:
+    - name: big-data
+      image: finn/big-data # = wie in skaffold.yaml
+      ports:
+       - containerPort: 3000
+#End: Deployment
+---
+#Begin: Service
+apiVersion: v1
+kind: Service
+metadata:
+ name: big-data-service
+ labels:
+  app: big-data-service
+spec:
+ selector:
+  app: big-data
+ ports:
+  - protocol: TCP
+    port: 3000
+    targetPort: 3000
+#End: Service
+---
+#Begin: Ingress
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+ name: big-data-ingress
+ annotations:
+  nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+ rules:
+  - http:
+     paths:
+      - path: /
+        pathType: Prefix
+        backend:
+         service:
+          name: big-data-service
+          port:
+           number: 3000
+#End: Ingress

@@ -1,0 +1,14 @@
+apiVersion: skaffold/v4beta9
+kind: Config
+metadata:
+  name: website
+build:
+  artifacts:
+    - image: finn/big-data
+      context: web-app
+      docker:
+        dockerfile: Dockerfile
+manifests:
+  rawYaml:
+    - k8s/web-app.yaml
+    - k8s/spark.yaml

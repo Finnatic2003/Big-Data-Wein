@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Produktklicks Diagramm</title>
+    <link rel="stylesheet" href="chart.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <header>
+        <h1>Produktklicks Diagramm</h1>
+    </header>
+    <div class="container">
+        <div class="chart-container">
+            <canvas id="logChart"></canvas>
+        </div>
+    </div>
+    <footer>
+        <p>&copy; 2024 Produktklicks Diagramm</p>
+    </footer>
+
+    <script>
+        async function fetchLogSummary() {
+            const response = await fetch('http://localhost:3000/getLogs');
+            const logs = await response.json();
+            const productCounts = { 'Produkt 1': 0, 'Produkt 2': 0 };
+
+            logs.forEach(log => {
+                if (log.product in productCounts) {
+                    productCounts[log.product]++;
+                }
+            });
+
+            return productCounts;
+        }
+
+        async function renderChart() {
+            const productCounts = await fetchLogSummary();
+            const ctx = document.getElementById('logChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(productCounts),
+                    datasets: [{
+                        label: 'Anzahl der Klicks',
+                        data: Object.values(productCounts),
+                        backgroundColor: ['rgba(54, 162, 235, 0.2)', 'rgba(255, 99, 132, 0.2)'],
+                        borderColor: ['rgba(54, 162, 235, 1)', 'rgba(255, 99, 132, 1)'],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        window.onload = renderChart;
+    </script>
+</body>
+</html>

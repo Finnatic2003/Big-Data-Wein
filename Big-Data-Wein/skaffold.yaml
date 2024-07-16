@@ -1,0 +1,18 @@
+apiVersion: skaffold/v4beta9
+kind: Config
+metadata:
+ name: wein-ranking
+build:
+ artifacts:
+  - image: finn/big-data
+    context: web-app
+    docker:
+     dockerfile: Dockerfile
+  - image: finn/big-data-spark
+    context: spark
+    docker:
+     dockerfile: Dockerfile
+manifests:
+ rawYaml:
+  - k8s/spark.yaml
+  - k8s/web-app.yaml

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="de">
+ <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Produkte</title>
+  <link rel="stylesheet" href="Website.css" />
+ </head>
+ <body>
+  <header>
+   <h1>Unsere Produkte</h1>
+   <!-- JavaScript-Funktion zum Senden von Klick-Logs an den Server -->
+   <script>
+    function logClick(product) {
+     fetch("http://localhost:3000/logClick", {
+      method: "POST",
+      headers: {
+       "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ product }),
+     })
+      .then((response) => response.text())
+      .then((data) => console.log(data))
+      .catch((error) => console.error("Error:", error));
+    }
+   </script>
+  <!--Aufbaue der Website-->
+  </header>
+  <div class="container">
+   <div class="product-grid">
+    <!-- Produkt 1 -->
+    <div class="product product-top-left">
+     <a href="/wein/produkt1">
+      <img src="produkt1.jpg" alt="Produkt 1" />
+      <h2>Pfalz Rotwein</h2>
+      <p>
+       Der Spätburgunder, auch Pinot Noir genannt, ist eine hochwertige
+       Rotweinsorte, die in Deutschland vor allem in Baden und Rheinhessen
+       angebaut wird.
+      </p>
+     </a>
+    </div>
+    <!-- Produkt 2 -->
+    <div class="product product-bottom-right">
+     <a href="/wein/produkt2">
+      <img src="produkt2.jpg" alt="Produkt 2" />
+      <h2>Pfalz Weißwein</h2>
+      <p>
+       Die Pfalz, das zweitgrößte Weinanbaugebiet Deutschlands, ist berühmt für
+       ihren Riesling und ideale Bedingungen für kräftige, süße Weine.
+      </p>
+     </a>
+    </div>
+   </div>
+  </div>
+  <footer>
+   <p>&copy; 2024 Unsere Produktseite</p>
+  </footer>
+ </body>
+</html>

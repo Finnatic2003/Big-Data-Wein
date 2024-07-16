@@ -1,0 +1,66 @@
+#Begin: Configmap
+apiVersion: v1
+kind: ConfigMap
+metadata:
+ name: big-data-mariadb-init-configmap
+data:
+ mariadb-init.sql: |
+
+  CREATE TABLE logs (
+    wein VARCHAR(255) NOT NULL,
+    count BIGINT NOT NULL
+  );
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+ name: big-data-mariadb-deployment
+ labels:
+  app: big-data-mariadb-deployment
+spec:
+ replicas: 1
+ selector:
+  matchLabels:
+   app: big-data-mariadb
+ template:
+  metadata:
+   labels:
+    app: big-data-mariadb
+  spec:
+   # Mount the configmap volume
+   # This is an excerpt of deployment.spec.template.spec
+   volumes:
+    - name: init-volume
+      configMap:
+       name: big-data-mariadb-init-configmap
+   containers:
+    - name: big-data-mariadb
+      image: mariadb
+      volumeMounts:
+       - name: init-volume
+         mountPath: /docker-entrypoint-initdb.d/
+      # Set required environment variables to initialize the container
+      env:
+       - name: MARIADB_ROOT_PASSWORD
+         value: "ePddAss2024"
+       - name: MARIADB_DATABASE
+         value: "popular"
+      ports:
+       - containerPort: 3306
+
+---
+#Begin: Service
+apiVersion: v1
+kind: Service
+metadata:
+ name: big-data-mariadb-service
+spec:
+ selector:
+  app: big-data-mariadb
+ ports:
+  - name: mariadb-proto
+    protocol: TCP
+    port: 3306
+    targetPort: 3306
+#End: Service
